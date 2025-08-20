@@ -34,10 +34,48 @@ class LivroView:
             except Exception as e:
                 messagebox.showerror("Erro", f"Não foi possivel conectar ao banco de dados:\n {e}")
         
+        
         login_win = tk.Tk()# Intancia janela
         login_win.title("Conectar ao Banco de Dados")
         login_win.geometry("350x300")
         
-        tk.Label(login_win, text="Host: ").pack(pady=2)# nome do quadradinho de escrever
-        host_entry = tk.Entry(login_win)
-        host_entry.pack()
+        tk.Label(login_win, text="Porta: ").pack(pady=2)# nome do quadradinho de escrever
+        db_user_entry = tk.Entry(login_win)
+        db_user_entry.pack()
+        
+        tk.Label(login_win, text=" Porta: ").pack(pady=2)
+        db_name_entry = tk.Entry(login_win)
+        db_name_entry.pack()
+        
+        tk.Label(login_win, text="Host: ").pack(pady=2)
+        db_host_entry = tk.Entry(login_win)
+        db_host_entry.pack()
+        
+        tk.Label(login_win, text="Porta: ").pack(pady=2)
+        db_port_entry = tk.Entry(login_win)
+        db_port_entry.pack()
+        
+        tk.Label(login_win, text="Porta: ").pack(pady=2)
+        db_password_entry = tk.Entry(login_win)
+        db_password_entry.pack()
+        
+        tk.Button(login_win, text="Conectar", command=conectar). pack(pady=15)
+        login_win.mainloop()
+        
+    def _show_livros_tela(self):
+        livros = self.controller.listar_livros()
+        win = tk.Tk()
+        win.title("Livros Cadastrados")
+        win.geometry("700x400")
+            
+        columns = ("id", "titulo", "autor", "ano", "isbn")
+        tree = ttk.Treeview(win, columns=columns, show="headings")# esse nome tree poderia ser qualquer um, tipo tabela
+        for col in columns:
+            tree.heading(col, text=col.capitalize())
+            tree.columns(col, width=120)
+        for livro in livros:
+            tree.insert("", tk.END, values=(livro.id, livro.titulo, livro.autor, livro.ano, livro.isbn))
+                
+        tree.pack(expand=True, fill="both")
+            
+        win.mainsloop()

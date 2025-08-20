@@ -1,8 +1,9 @@
+# Refatorando o módulo para adequação a interface do thinker
 '''
 padrão MVC(tambem existem outros padroes como o MVT ou MVP)
 '''
 from database.db import Database # Estou buscanco da pasta database o codigo db
-from views.livro_view import LivroView
+from models.livro import Livro
 #from pasta.arquivo import class == da pasta tal e tal arquivo import tal class
 
 
@@ -17,7 +18,7 @@ class LivroController:
         )
         
         self.criar_tabela_se_nao_existir()
-        self.view = LivroView()
+        #self.view = LivroView()
         
     def criar_tabela_se_nao_existir(self):
         conn = self.db.connect()
@@ -32,7 +33,7 @@ class LivroController:
                    isbn VARCHAR(13) 
                 );
                 
-            """)
+            """) # cur.execute == criar banco
             
             conn.commit()
             cur.close()
@@ -60,4 +61,16 @@ class LivroController:
             print("Erro ao conectar ao banco de dados.")
             
     def listar_livros(self, livros):
-        self.view.mostrar_livros(livros)
+        conn = self.db.connect()
+        livros = []# aqui eu declarei uma tupla
+        
+        if conn: #se conexão verdadeira
+            cur = conn.cursor() # o cursor é para que os comandos sql sejam executador
+            cur.execute("SELECT id, titulo, autor, ano, isbn FROM livros ORDER BY id;") # Comando sql
+            
+            for linha in cur.fetchall():# fetchall: comando para pegar todas as linhas do meu banco
+                livros.append(Livro(*linha))
+            cur.close()
+            cur.close()
+        
+        return livros
